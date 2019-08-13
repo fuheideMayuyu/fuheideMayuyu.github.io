@@ -8,18 +8,18 @@
   <link rel="dns-prefetch" href="https://fuheidemayuyu.github.io">
   <title>veu源码解析-前期准备 | fuheideMayuyu的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="初识Flow1.什么是Flow?Flow是Facebook出品的JavaScript静态类型检查工具。 2.为什么用Flow?JavaScript是动态类型语言，灵活性好，但是缺点也很明显，在编译期不报错的代码，在运行阶段可能出现各种奇怪的bug。如果有一款工具可以在编译期就发现这些错误，无疑会极大的提高项目的维护性和可读性。 3.Flow的工作方式：类型推断:通过变量的使用上下文来推断出变量类型">
+  <meta name="description" content="初识Flow1.什么是Flow?Flow是Facebook出品的JavaScript静态类型检查工具。 2.为什么用Flow?JavaScript是动态类型语言，灵活性好，但是缺点也很明显，在编译期不报错的代码，在运行阶段可能出现各种奇怪的bug。如果有一款工具可以在编译期就发现这些错误，无疑会极大的提高项目的维护性和可读性。">
 <meta name="keywords" content="vue,源码,项目准备">
 <meta property="og:type" content="article">
 <meta property="og:title" content="veu源码解析-前期准备">
 <meta property="og:url" content="https://fuheidemayuyu.github.io/2019/08/13/veu源码解析-前期准备/index.html">
 <meta property="og:site_name" content="fuheideMayuyu的博客">
-<meta property="og:description" content="初识Flow1.什么是Flow?Flow是Facebook出品的JavaScript静态类型检查工具。 2.为什么用Flow?JavaScript是动态类型语言，灵活性好，但是缺点也很明显，在编译期不报错的代码，在运行阶段可能出现各种奇怪的bug。如果有一款工具可以在编译期就发现这些错误，无疑会极大的提高项目的维护性和可读性。 3.Flow的工作方式：类型推断:通过变量的使用上下文来推断出变量类型">
+<meta property="og:description" content="初识Flow1.什么是Flow?Flow是Facebook出品的JavaScript静态类型检查工具。 2.为什么用Flow?JavaScript是动态类型语言，灵活性好，但是缺点也很明显，在编译期不报错的代码，在运行阶段可能出现各种奇怪的bug。如果有一款工具可以在编译期就发现这些错误，无疑会极大的提高项目的维护性和可读性。">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-08-13T14:27:04.446Z">
+<meta property="og:updated_time" content="2019-08-13T14:29:03.591Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="veu源码解析-前期准备">
-<meta name="twitter:description" content="初识Flow1.什么是Flow?Flow是Facebook出品的JavaScript静态类型检查工具。 2.为什么用Flow?JavaScript是动态类型语言，灵活性好，但是缺点也很明显，在编译期不报错的代码，在运行阶段可能出现各种奇怪的bug。如果有一款工具可以在编译期就发现这些错误，无疑会极大的提高项目的维护性和可读性。 3.Flow的工作方式：类型推断:通过变量的使用上下文来推断出变量类型">
+<meta name="twitter:description" content="初识Flow1.什么是Flow?Flow是Facebook出品的JavaScript静态类型检查工具。 2.为什么用Flow?JavaScript是动态类型语言，灵活性好，但是缺点也很明显，在编译期不报错的代码，在运行阶段可能出现各种奇怪的bug。如果有一款工具可以在编译期就发现这些错误，无疑会极大的提高项目的维护性和可读性。">
   
     <link rel="alternative" href="/atom.xml" title="fuheideMayuyu的博客" type="application/atom+xml">
   
@@ -181,6 +181,7 @@
       
         <h3 id="初识Flow"><a href="#初识Flow" class="headerlink" title="初识Flow"></a>初识Flow</h3><h4 id="1-什么是Flow"><a href="#1-什么是Flow" class="headerlink" title="1.什么是Flow?"></a>1.什么是Flow?</h4><p>Flow是Facebook出品的JavaScript静态类型检查工具。</p>
 <h4 id="2-为什么用Flow"><a href="#2-为什么用Flow" class="headerlink" title="2.为什么用Flow?"></a>2.为什么用Flow?</h4><p>JavaScript是动态类型语言，灵活性好，但是缺点也很明显，在编译期不报错的代码，在运行阶段可能出现各种奇怪的bug。如果有一款工具可以在编译期就发现这些错误，无疑会极大的提高项目的维护性和可读性。</p>
+<a id="more"></a>
 <h4 id="3-Flow的工作方式："><a href="#3-Flow的工作方式：" class="headerlink" title="3.Flow的工作方式："></a>3.Flow的工作方式：</h4><p><strong>类型推断:</strong><br>通过变量的使用上下文来推断出变量类型，然后根据这些推断来检查类型。</p>
 <p><strong>类型注释:</strong><br>事先注释好我们期待的类型，Flow会基于这些注释来判断类型是否符合。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">/*@flow*/``</span><br><span class="line"></span><br><span class="line">function split(str) &#123;</span><br><span class="line">  return str.split(&apos; &apos;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">split(11) // 报错，类型不符，函数期待的string类型，但实际传入的是number类型</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">function add(x: number, y: number): number &#123;</span><br><span class="line">  return x + y</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">add(&apos;Hello&apos;, 11)// 报错，类型不符</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">var arr: Array&lt;number&gt; = [1, 2, 3]</span><br><span class="line"></span><br><span class="line">arr.push(&apos;Hello&apos;)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">class Bar &#123;</span><br><span class="line">  x: string;           // x 是字符串</span><br><span class="line">  y: string | number;  // y 可以是字符串或者数字</span><br><span class="line">  z: boolean;</span><br><span class="line"></span><br><span class="line">  constructor(x: string, y: string | number) &#123;</span><br><span class="line">    this.x = x</span><br><span class="line">    this.y = y</span><br><span class="line">    this.z = false</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">var bar: Bar = new Bar(&apos;hello&apos;, 4)</span><br></pre></td></tr></table></figure></p>
 <p>Flow的静态类型检查极大的帮助了Vue项目的源码开发和维护，具有类似在用的还有TypeScript，实际上在vue3.0中，Flow 被替换为TypeScript。</p>
