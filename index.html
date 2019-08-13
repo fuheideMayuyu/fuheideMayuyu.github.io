@@ -160,6 +160,127 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-veu源码解析-前期准备" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/08/13/veu源码解析-前期准备/">veu源码解析-前期准备</a>
+    </h1>
+  
+
+        
+        <a href="/2019/08/13/veu源码解析-前期准备/" class="archive-article-date">
+  	<time datetime="2019-08-13T14:25:01.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-08-13</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="初识Flow"><a href="#初识Flow" class="headerlink" title="初识Flow"></a>初识Flow</h3><h4 id="1-什么是Flow"><a href="#1-什么是Flow" class="headerlink" title="1.什么是Flow?"></a>1.什么是Flow?</h4><p>Flow是Facebook出品的JavaScript静态类型检查工具。</p>
+<h4 id="2-为什么用Flow"><a href="#2-为什么用Flow" class="headerlink" title="2.为什么用Flow?"></a>2.为什么用Flow?</h4><p>JavaScript是动态类型语言，灵活性好，但是缺点也很明显，在编译期不报错的代码，在运行阶段可能出现各种奇怪的bug。如果有一款工具可以在编译期就发现这些错误，无疑会极大的提高项目的维护性和可读性。</p>
+<h4 id="3-Flow的工作方式："><a href="#3-Flow的工作方式：" class="headerlink" title="3.Flow的工作方式："></a>3.Flow的工作方式：</h4><p><strong>类型推断:</strong><br>通过变量的使用上下文来推断出变量类型，然后根据这些推断来检查类型。</p>
+<p><strong>类型注释:</strong><br>事先注释好我们期待的类型，Flow会基于这些注释来判断类型是否符合。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">/*@flow*/``</span><br><span class="line"></span><br><span class="line">function split(str) &#123;</span><br><span class="line">  return str.split(&apos; &apos;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">split(11) // 报错，类型不符，函数期待的string类型，但实际传入的是number类型</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">function add(x: number, y: number): number &#123;</span><br><span class="line">  return x + y</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">add(&apos;Hello&apos;, 11)// 报错，类型不符</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">var arr: Array&lt;number&gt; = [1, 2, 3]</span><br><span class="line"></span><br><span class="line">arr.push(&apos;Hello&apos;)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">class Bar &#123;</span><br><span class="line">  x: string;           // x 是字符串</span><br><span class="line">  y: string | number;  // y 可以是字符串或者数字</span><br><span class="line">  z: boolean;</span><br><span class="line"></span><br><span class="line">  constructor(x: string, y: string | number) &#123;</span><br><span class="line">    this.x = x</span><br><span class="line">    this.y = y</span><br><span class="line">    this.z = false</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">var bar: Bar = new Bar(&apos;hello&apos;, 4)</span><br></pre></td></tr></table></figure></p>
+<p>Flow的静态类型检查极大的帮助了Vue项目的源码开发和维护，具有类似在用的还有TypeScript，实际上在vue3.0中，Flow 被替换为TypeScript。</p>
+<h3 id="Vue-js-源码目录设计"><a href="#Vue-js-源码目录设计" class="headerlink" title="Vue.js 源码目录设计"></a>Vue.js 源码目录设计</h3><p>Vue.js 的源码都在src目录下,目录结构如下:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">src</span><br><span class="line">├── compiler        # 编译相关 </span><br><span class="line">├── core            # 核心代码 </span><br><span class="line">├── platforms       # 不同平台的支持</span><br><span class="line">├── server          # 服务端渲染</span><br><span class="line">├── sfc             # .vue 文件解析</span><br><span class="line">├── shared          # 共享代码</span><br></pre></td></tr></table></figure></p>
+<p><strong>compiler</strong></p>
+<p>complier目录包含Vue.js所有编译相关的代码。它包括把模板解析成ast语法树,ast语法树优化，代码生成等功能。<br>编译的工作可以在构建时（借助webpack、vue-loader等插件）;也可以在运行时做。编译是一项比较耗消耗性能的工作 ，所以更推荐前者进行编译。</p>
+<p><strong>core</strong></p>
+<p>core目录包含了Vue.js的核心代码，包括内置组件、全局API封装,Vue实例化、观察者、虚拟DOM、工具函数等。</p>
+<p><strong>platform</strong></p>
+<p>Vue.js是一个跨平台的MVVM框架，它可以跑在web上，也可以配合weex跑在native客户端上。platform是Vue.js的入口，2个目录代表2个入口，分别打包成web上和weex上的Vue.js。</p>
+<p><strong>server</strong></p>
+<p>Vue.js 2.0支持了服务端渲染，所有服务端渲染相关的逻辑都在这个目录下。<br><strong>注意:</strong> 这部分代码是跑在服务端的Node.js， 不要和跑在浏览器端的Vue.js混淆。</p>
+<p>服务端渲染主要是把组件渲染为服务端的HTML字符串, 将它们直接发送到浏览器 ，最后将静态标记”混合”为客户端上完全交互的应用程序。</p>
+<p><strong>sfc</strong></p>
+<p>通常我们开发的Vue.js都会借助webpack构建，然后通过.vue单文件编写组件。<br>这个目录夏的代码逻辑会把.vue文件内容解析成一个JavaScript对象。</p>
+<p><strong>shared</strong></p>
+<p>Vue.js会定义一些工具方法，在这里定义的工具方法会被浏览器端的Vue.js和服务端的Vue.js共享。</p>
+<p>从Vue.jsd的目录设计中，我们可以看出，vue的目录结构清晰，功能模块和可复用代码都进行了拆分，代码的阅读性和可维护性都很强，值得借鉴和学习。</p>
+<h3 id="Vue-js源码构建"><a href="#Vue-js源码构建" class="headerlink" title="Vue.js源码构建"></a>Vue.js源码构建</h3><p>Vue.js源码是基于Rollup构建的，其构建相关配置都在scripts目录下。</p>
+<h4 id="1-构建脚本"><a href="#1-构建脚本" class="headerlink" title="1.构建脚本"></a>1.构建脚本</h4><p>通常一个基于NPM托管的项目都会有一个package.json文件，他是对项目的描述文件。<br>通常会配置script字段作为NPM的执行脚本，Vue.js源码构建的脚本如下:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  &quot;script&quot;: &#123;</span><br><span class="line">    &quot;build&quot;: &quot;node scripts/build.js&quot;,</span><br><span class="line">    &quot;build:ssr&quot;: &quot;npm run build -- web-runtime-cjs,web-server-renderer&quot;,</span><br><span class="line">    &quot;build:weex&quot;: &quot;npm run build --weex&quot;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>当我们在命令行运行npm run build 的时候，实际上会执行node script/build.js</p>
+<h4 id="2-构建过程"><a href="#2-构建过程" class="headerlink" title="2.构建过程"></a>2.构建过程</h4><p>我们对于构建过程分析是基于源码的,先打开构建的入口JS文件，在script/build.js中:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">let builds = require(&apos;./config&apos;).getAllBuilds()</span><br><span class="line"></span><br><span class="line">// filter builds via command line arg</span><br><span class="line">if (process.argv[2]) &#123;</span><br><span class="line">  const filters = process.argv[2].split(&apos;,&apos;)</span><br><span class="line">  builds = builds.filter(b =&gt; &#123;</span><br><span class="line">    return filters.some(f =&gt; b.output.file.indexOf(f) &gt; -1 || b._name.indexOf(f) &gt; -1)</span><br><span class="line">  &#125;)</span><br><span class="line">&#125; else &#123;</span><br><span class="line">  // filter out weex builds by default</span><br><span class="line">  builds = builds.filter(b =&gt; &#123;</span><br><span class="line">    return b.output.file.indexOf(&apos;weex&apos;) === -1</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">build(builds)</span><br></pre></td></tr></table></figure></p>
+<p>从配置文件读取配置。再通过命令行参数对构建配置 做过滤，从而构建出不同的Vue.js。</p>
+<p>接下来，我们看下配置文件scripts/config.js:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line">const builds = &#123;</span><br><span class="line">  // Runtime only (CommonJS). Used by bundlers e.g. Webpack &amp; Browserify</span><br><span class="line">  &apos;web-runtime-cjs&apos;: &#123;</span><br><span class="line">    entry: resolve(&apos;web/entry-runtime.js&apos;),</span><br><span class="line">    dest: resolve(&apos;dist/vue.runtime.common.js&apos;),</span><br><span class="line">    format: &apos;cjs&apos;,</span><br><span class="line">    banner</span><br><span class="line">  &#125;,</span><br><span class="line">  // Runtime+compiler CommonJS build (CommonJS)</span><br><span class="line">  &apos;web-full-cjs&apos;: &#123;</span><br><span class="line">    entry: resolve(&apos;web/entry-runtime-with-compiler.js&apos;),</span><br><span class="line">    dest: resolve(&apos;dist/vue.common.js&apos;),</span><br><span class="line">    format: &apos;cjs&apos;,</span><br><span class="line">    alias: &#123; he: &apos;./entity-decoder&apos; &#125;,</span><br><span class="line">    banner</span><br><span class="line">  &#125;,</span><br><span class="line">  // Runtime only (ES Modules). Used by bundlers that support ES Modules,</span><br><span class="line">  // e.g. Rollup &amp; Webpack 2</span><br><span class="line">  &apos;web-runtime-esm&apos;: &#123;</span><br><span class="line">    entry: resolve(&apos;web/entry-runtime.js&apos;),</span><br><span class="line">    dest: resolve(&apos;dist/vue.runtime.esm.js&apos;),</span><br><span class="line">    format: &apos;es&apos;,</span><br><span class="line">    banner</span><br><span class="line">  &#125;,</span><br><span class="line">  // Runtime+compiler CommonJS build (ES Modules)</span><br><span class="line">  &apos;web-full-esm&apos;: &#123;</span><br><span class="line">    entry: resolve(&apos;web/entry-runtime-with-compiler.js&apos;),</span><br><span class="line">    dest: resolve(&apos;dist/vue.esm.js&apos;),</span><br><span class="line">    format: &apos;es&apos;,</span><br><span class="line">    alias: &#123; he: &apos;./entity-decoder&apos; &#125;,</span><br><span class="line">    banner</span><br><span class="line">  &#125;,</span><br><span class="line">  // runtime-only build (Browser)</span><br><span class="line">  &apos;web-runtime-dev&apos;: &#123;</span><br><span class="line">    entry: resolve(&apos;web/entry-runtime.js&apos;),</span><br><span class="line">    dest: resolve(&apos;dist/vue.runtime.js&apos;),</span><br><span class="line">    format: &apos;umd&apos;,</span><br><span class="line">    env: &apos;development&apos;,</span><br><span class="line">    banner</span><br><span class="line">  &#125;,</span><br><span class="line">  // runtime-only production build (Browser)</span><br><span class="line">  &apos;web-runtime-prod&apos;: &#123;</span><br><span class="line">    entry: resolve(&apos;web/entry-runtime.js&apos;),</span><br><span class="line">    dest: resolve(&apos;dist/vue.runtime.min.js&apos;),</span><br><span class="line">    format: &apos;umd&apos;,</span><br><span class="line">    env: &apos;production&apos;,</span><br><span class="line">    banner</span><br><span class="line">  &#125;,</span><br><span class="line">  // Runtime+compiler development build (Browser)</span><br><span class="line">  &apos;web-full-dev&apos;: &#123;</span><br><span class="line">    entry: resolve(&apos;web/entry-runtime-with-compiler.js&apos;),</span><br><span class="line">    dest: resolve(&apos;dist/vue.js&apos;),</span><br><span class="line">    format: &apos;umd&apos;,</span><br><span class="line">    env: &apos;development&apos;,</span><br><span class="line">    alias: &#123; he: &apos;./entity-decoder&apos; &#125;,</span><br><span class="line">    banner</span><br><span class="line">  &#125;,</span><br><span class="line">  // Runtime+compiler production build  (Browser)</span><br><span class="line">  &apos;web-full-prod&apos;: &#123;</span><br><span class="line">    entry: resolve(&apos;web/entry-runtime-with-compiler.js&apos;),</span><br><span class="line">    dest: resolve(&apos;dist/vue.min.js&apos;),</span><br><span class="line">    format: &apos;umd&apos;,</span><br><span class="line">    env: &apos;production&apos;,</span><br><span class="line">    alias: &#123; he: &apos;./entity-decoder&apos; &#125;,</span><br><span class="line">    banner</span><br><span class="line">  &#125;,</span><br><span class="line">  // ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这里列举了Vue.js的构建配置，关于服务端渲染和webpack插件以及weex的打包配置 没有涉及。</p>
+<p>对于单个配置是遵循Rollup的构建规则的。其中entry属性表示构建的入口JS文件地址，dest属性表示构建后的JS文件地址。format属性表示构建的格式，cjs表示构建后的文件遵循CommonJS规范，es表示遵循ES Module 规范。 umd表示构建出来的文件遵循UMD规范。</p>
+<p>以web-runtime-cjs配置为例，它的entry是resolve(‘web/entry-runtime.js’),先来看下resolve函数的定义，scripts/config.js</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">const aliases = require(&apos;./alias&apos;)</span><br><span class="line">const resolve = p =&gt; &#123;</span><br><span class="line">  const base = p.split(&apos;/&apos;)[0]</span><br><span class="line">  if (aliases[base]) &#123;</span><br><span class="line">    return path.resolve(aliases[base], p.slice(base.length + 1))</span><br><span class="line">  &#125; else &#123;</span><br><span class="line">    return path.resolve(__dirname, &apos;../&apos;, p)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里的 resolve 函数实现非常简单，它先把 resolve 函数传入的参数 p 通过 / 做了分割成数组，然后取数组第一个元素设置为 base。在我们这个例子中，参数 p 是 web/entry-runtime.js，那么 base 则为 web。base 并不是实际的路径，它的真实路径借助了别名的配置，我们来看一下别名配置的代码，在 scripts/alias 中：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">const path = require(&apos;path&apos;)</span><br><span class="line"></span><br><span class="line">module.exports = &#123;</span><br><span class="line">  vue: path.resolve(__dirname, &apos;../src/platforms/web/entry-runtime-with-compiler&apos;),</span><br><span class="line">  compiler: path.resolve(__dirname, &apos;../src/compiler&apos;),</span><br><span class="line">  core: path.resolve(__dirname, &apos;../src/core&apos;),</span><br><span class="line">  shared: path.resolve(__dirname, &apos;../src/shared&apos;),</span><br><span class="line">  web: path.resolve(__dirname, &apos;../src/platforms/web&apos;),</span><br><span class="line">  weex: path.resolve(__dirname, &apos;../src/platforms/weex&apos;),</span><br><span class="line">  server: path.resolve(__dirname, &apos;../src/server&apos;),</span><br><span class="line">  entries: path.resolve(__dirname, &apos;../src/entries&apos;),</span><br><span class="line">  sfc: path.resolve(__dirname, &apos;../src/sfc&apos;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>很显然，这里 web 对应的真实的路径是 path.resolve(__dirname, ‘../src/platforms/web’)，这个路径就找到了 Vue.js 源码的 web 目录。然后 resolve 函数通过 path.resolve(aliases[base], p.slice(base.length + 1)) 找到了最终路径，它就是 Vue.js 源码 web 目录下的 entry-runtime.js。因此，web-runtime-cjs 配置对应的入口文件就找到了。<br>它经过 Rollup 的构建打包后，最终会在 dist 目录下生成 vue.runtime.common.js。</p>
+<h4 id="3-Runtime-Only-与-Runtime-Compiler"><a href="#3-Runtime-Only-与-Runtime-Compiler" class="headerlink" title="3.Runtime Only 与 Runtime+Compiler"></a>3.Runtime Only 与 Runtime+Compiler</h4><p>在利用vue-cli初始化项目的时候，一般会询问我们用Runtime Only 版本的还是 Runtime+Compiler 版本。那么这两个版本有什么区别呢？</p>
+<p><strong>Runtime Only</strong></p>
+<p>我们在使用 Runtime Only 版本的 Vue.js 的时候，通常需要借助如 webpack 的 vue-loader 工具把 .vue 文件编译成 JavaScript，因为是在编译阶段做的，所以它只包含运行时的 Vue.js 代码，因此代码体积也会更轻量。</p>
+<p><strong>Runtime+Compiler</strong><br>我们如果没有对代码做预编译，但又使用了 Vue 的 template 属性并传入一个字符串，则需要在客户端编译模板，如下所示：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">// 需要编译器的版本</span><br><span class="line">new Vue(&#123;</span><br><span class="line">  template: &apos;&lt;div&gt;&#123;&#123; hi &#125;&#125;&lt;/div&gt;&apos;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">// 这种情况不需要</span><br><span class="line">new Vue(&#123;</span><br><span class="line">  render (h) &#123;</span><br><span class="line">    return h(&apos;div&apos;, this.hi)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>因为在 Vue.js 2.0 中，最终渲染都是通过 render 函数，如果写 template 属性，则需要编译成 render 函数，那么这个编译过程会发生运行时，所以需要带有编译器的版本。</p>
+<p>很显然，这个编译过程对性能会有一定损耗，所以通常我们更推荐使用 Runtime-Only 的 Vue.js。</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">vue</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">源码</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">项目准备</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/08/13/veu源码解析-前期准备/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-彻底理解JS中的回调-Callback-函数" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -926,99 +1047,6 @@
 
 
   
-    <article id="post-node从入门到放弃系列-express-项目实践" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/08/10/node从入门到放弃系列-express-项目实践/">node从入门到放弃系列-express-项目实践</a>
-    </h1>
-  
-
-        
-        <a href="/2019/08/10/node从入门到放弃系列-express-项目实践/" class="archive-article-date">
-  	<time datetime="2019-08-10T12:39:17.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-08-10</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h4 id="1-项目搭建"><a href="#1-项目搭建" class="headerlink" title="1.项目搭建"></a>1.项目搭建</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">npm init --yes</span><br><span class="line">npm i express</span><br><span class="line">npm i joi@13.1.0</span><br><span class="line">npm i -g nodemon</span><br></pre></td></tr></table></figure>
-<h4 id="2-在根目录创建index-js文件"><a href="#2-在根目录创建index-js文件" class="headerlink" title="2.在根目录创建index.js文件"></a>2.在根目录创建index.js文件</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">const Joi = require(&apos;joi&apos;);</span><br><span class="line">const express = require(&apos;express&apos;);</span><br><span class="line">const app = express();</span><br><span class="line"></span><br><span class="line">app.use(express.json());</span><br><span class="line"></span><br><span class="line">app.use(function(req,res,next) &#123;</span><br><span class="line">  console.log(&apos;Logging...&apos;)</span><br><span class="line">  next()</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">app.use(function(req,res,next) &#123;</span><br><span class="line">  console.log(&apos;Authenticating...&apos;)</span><br><span class="line">  next()</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">app.get(&apos;/&apos;, (req,res) =&gt; &#123;</span><br><span class="line">  res.send(&apos;Hello World !!!!&apos;)</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">// 设置环境变量</span><br><span class="line">const port = process.env.PORT || 3000;</span><br><span class="line">app.listen(port, () =&gt; console.log(`Listening on port $&#123;port&#125;...`))</span><br></pre></td></tr></table></figure>
-<h4 id="3-在根目录新建logger-js"><a href="#3-在根目录新建logger-js" class="headerlink" title="3.在根目录新建logger.js"></a>3.在根目录新建logger.js</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">function log(req,res,next) &#123;</span><br><span class="line">  console.log(&apos;Logging...&apos;)</span><br><span class="line">  next()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">module.exports = log;</span><br></pre></td></tr></table></figure>
-<h4 id="4-index-js"><a href="#4-index-js" class="headerlink" title="4.index.js"></a>4.index.js</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">const logger = require(&apos;./logger&apos;)</span><br><span class="line"></span><br><span class="line">app.use(logger)</span><br></pre></td></tr></table></figure>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">node</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">入门</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">express</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">项目搭建</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">初始化</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/08/10/node从入门到放弃系列-express-项目实践/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
@@ -1149,18 +1177,6 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">http</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">协议</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">概述</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">calc</a>
               </li>
              
@@ -1173,11 +1189,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">javascript</a>
+                <a href="javascript:void(0)" class="js-tag color5">http</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">label</a>
+                <a href="javascript:void(0)" class="js-tag color3">协议</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">概述</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1186,6 +1206,18 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">状态码</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">URL</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">javascript</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">label</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1209,10 +1241,6 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">post请求</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">put请求</a>
               </li>
              
@@ -1229,6 +1257,10 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">post请求</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">内建中间件</a>
               </li>
              
@@ -1237,11 +1269,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">启动node</a>
+                <a href="javascript:void(0)" class="js-tag color2">第三方中间件</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">第三方中间件</a>
+                <a href="javascript:void(0)" class="js-tag color2">启动node</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1253,10 +1285,6 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">hello world</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">项目搭建</a>
               </li>
              
@@ -1265,7 +1293,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">URL</a>
+                <a href="javascript:void(0)" class="js-tag color2">hello world</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1274,6 +1302,18 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">sticky</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">vue</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">源码</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">项目准备</a>
               </li>
              
               <li class="article-tag-list-item">
