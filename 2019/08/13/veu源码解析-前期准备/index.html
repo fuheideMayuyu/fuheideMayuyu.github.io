@@ -16,10 +16,12 @@
 <meta property="og:site_name" content="fuheideMayuyu的博客">
 <meta property="og:description" content="初识Flow1.什么是Flow?Flow是Facebook出品的JavaScript静态类型检查工具。 2.为什么用Flow?JavaScript是动态类型语言，灵活性好，但是缺点也很明显，在编译期不报错的代码，在运行阶段可能出现各种奇怪的bug。如果有一款工具可以在编译期就发现这些错误，无疑会极大的提高项目的维护性和可读性。">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-08-13T14:29:03.591Z">
+<meta property="og:image" content="https://fuheidemayuyu.github.io/2019/08/13/veu源码解析-前期准备/目录.jpg">
+<meta property="og:updated_time" content="2019-08-17T12:40:03.402Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="veu源码解析-前期准备">
 <meta name="twitter:description" content="初识Flow1.什么是Flow?Flow是Facebook出品的JavaScript静态类型检查工具。 2.为什么用Flow?JavaScript是动态类型语言，灵活性好，但是缺点也很明显，在编译期不报错的代码，在运行阶段可能出现各种奇怪的bug。如果有一款工具可以在编译期就发现这些错误，无疑会极大的提高项目的维护性和可读性。">
+<meta name="twitter:image" content="https://fuheidemayuyu.github.io/2019/08/13/veu源码解析-前期准备/目录.jpg">
   
     <link rel="alternative" href="/atom.xml" title="fuheideMayuyu的博客" type="application/atom+xml">
   
@@ -186,7 +188,7 @@
 <p><strong>类型注释:</strong><br>事先注释好我们期待的类型，Flow会基于这些注释来判断类型是否符合。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">/*@flow*/``</span><br><span class="line"></span><br><span class="line">function split(str) &#123;</span><br><span class="line">  return str.split(&apos; &apos;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">split(11) // 报错，类型不符，函数期待的string类型，但实际传入的是number类型</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">function add(x: number, y: number): number &#123;</span><br><span class="line">  return x + y</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">add(&apos;Hello&apos;, 11)// 报错，类型不符</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">var arr: Array&lt;number&gt; = [1, 2, 3]</span><br><span class="line"></span><br><span class="line">arr.push(&apos;Hello&apos;)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">class Bar &#123;</span><br><span class="line">  x: string;           // x 是字符串</span><br><span class="line">  y: string | number;  // y 可以是字符串或者数字</span><br><span class="line">  z: boolean;</span><br><span class="line"></span><br><span class="line">  constructor(x: string, y: string | number) &#123;</span><br><span class="line">    this.x = x</span><br><span class="line">    this.y = y</span><br><span class="line">    this.z = false</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">var bar: Bar = new Bar(&apos;hello&apos;, 4)</span><br></pre></td></tr></table></figure></p>
 <p>Flow的静态类型检查极大的帮助了Vue项目的源码开发和维护，具有类似在用的还有TypeScript，实际上在vue3.0中，Flow 被替换为TypeScript。</p>
 <h3 id="Vue-js-源码目录设计"><a href="#Vue-js-源码目录设计" class="headerlink" title="Vue.js 源码目录设计"></a>Vue.js 源码目录设计</h3><p>Vue.js 的源码都在src目录下,目录结构如下:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">src</span><br><span class="line">├── compiler        # 编译相关 </span><br><span class="line">├── core            # 核心代码 </span><br><span class="line">├── platforms       # 不同平台的支持</span><br><span class="line">├── server          # 服务端渲染</span><br><span class="line">├── sfc             # .vue 文件解析</span><br><span class="line">├── shared          # 共享代码</span><br></pre></td></tr></table></figure></p>
-<p><strong>compiler</strong></p>
+<p><img src="/2019/08/13/veu源码解析-前期准备/目录.jpg" alt="目录"><br><strong>compiler</strong></p>
 <p>complier目录包含Vue.js所有编译相关的代码。它包括把模板解析成ast语法树,ast语法树优化，代码生成等功能。<br>编译的工作可以在构建时（借助webpack、vue-loader等插件）;也可以在运行时做。编译是一项比较耗消耗性能的工作 ，所以更推荐前者进行编译。</p>
 <p><strong>core</strong></p>
 <p>core目录包含了Vue.js的核心代码，包括内置组件、全局API封装,Vue实例化、观察者、虚拟DOM、工具函数等。</p>
@@ -490,6 +492,26 @@ MathJax.Hub.Queue(function() {
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">javaScript</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">类型</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">http</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">协议</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">概述</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">css</a>
               </li>
              
@@ -502,11 +524,23 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">浮动</a>
+                <a href="javascript:void(0)" class="js-tag color3">报文</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">清除浮动</a>
+                <a href="javascript:void(0)" class="js-tag color4">状态码</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">URL</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">javascript</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">label</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -526,35 +560,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">http</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">报文</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">状态码</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">环境变量</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">URL</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">debug</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">calc</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">web服务器</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -562,23 +568,19 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">环境变量</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">calc</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">内建中间件</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">javascript</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">label</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">协议</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">概述</a>
+                <a href="javascript:void(0)" class="js-tag color2">web服务器</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -586,19 +588,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">路由</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">启动node</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">hello world</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">输入验证</a>
+                <a href="javascript:void(0)" class="js-tag color3">路由</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -606,19 +600,15 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">vue</a>
+                <a href="javascript:void(0)" class="js-tag color3">浮动</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">源码</a>
+                <a href="javascript:void(0)" class="js-tag color5">清除浮动</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">数据驱动</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">new Vue</a>
+                <a href="javascript:void(0)" class="js-tag color2">hello world</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -630,11 +620,35 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">vue</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">源码</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">项目准备</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">项目搭建</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">初始化</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">输入验证</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">数据驱动</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">new Vue</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -647,10 +661,6 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">webpack配置</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">项目准备</a>
               </li>
              
               <li class="article-tag-list-item">
