@@ -6,19 +6,20 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="https://fuheidemayuyu.github.io">
-  <title>Tag: node | fuheideMayuyu的博客</title>
+  <title>node从入门到放弃系列-MongoDB增删改查 | fuheideMayuyu的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="就职于非知名电商公司的前端小菜鸟一枚">
+  <meta name="description" content="12345const mongoose = require(&amp;apos;mongoose&amp;apos;)mongoose.connect(&amp;apos;mongodb://localhost:27017/playground&amp;apos;) // 如果这个库不存在，在写入数据之后，这个库将会被自动创建。  .then(() =&amp;gt; console.log(&amp;apos;Connected to Mon">
 <meta name="keywords" content="前端,js,javascript,html5,开发者,程序猿,极客,编程,代码,开源,IT网站,Developer,Programmer,Coder,Geek,html,css,css3,用户体验">
-<meta property="og:type" content="website">
-<meta property="og:title" content="fuheideMayuyu的博客">
-<meta property="og:url" content="https://fuheidemayuyu.github.io/tags/node/index.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="node从入门到放弃系列-MongoDB增删改查">
+<meta property="og:url" content="https://fuheidemayuyu.github.io/2019/08/18/node从入门到放弃系列-MongoDB增删改查/index.html">
 <meta property="og:site_name" content="fuheideMayuyu的博客">
-<meta property="og:description" content="就职于非知名电商公司的前端小菜鸟一枚">
+<meta property="og:description" content="12345const mongoose = require(&amp;apos;mongoose&amp;apos;)mongoose.connect(&amp;apos;mongodb://localhost:27017/playground&amp;apos;) // 如果这个库不存在，在写入数据之后，这个库将会被自动创建。  .then(() =&amp;gt; console.log(&amp;apos;Connected to Mon">
 <meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-08-18T13:49:55.493Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="fuheideMayuyu的博客">
-<meta name="twitter:description" content="就职于非知名电商公司的前端小菜鸟一枚">
+<meta name="twitter:title" content="node从入门到放弃系列-MongoDB增删改查">
+<meta name="twitter:description" content="12345const mongoose = require(&amp;apos;mongoose&amp;apos;)mongoose.connect(&amp;apos;mongodb://localhost:27017/playground&amp;apos;) // 如果这个库不存在，在写入数据之后，这个库将会被自动创建。  .then(() =&amp;gt; console.log(&amp;apos;Connected to Mon">
   
     <link rel="alternative" href="/atom.xml" title="fuheideMayuyu的博客" type="application/atom+xml">
   
@@ -158,525 +159,162 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="post-node从入门到放弃系列-MongoDB增删改查" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
     
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      node从入门到放弃系列-MongoDB增删改查
+    </h1>
+  
+
+        
+        <a href="/2019/08/18/node从入门到放弃系列-MongoDB增删改查/" class="archive-article-date">
+  	<time datetime="2019-08-18T06:13:59.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-08-18</time>
+</a>
+        
+      </header>
     
+    <div class="article-entry" itemprop="articleBody">
+      
+        <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">const mongoose = require(&apos;mongoose&apos;)</span><br><span class="line"></span><br><span class="line">mongoose.connect(&apos;mongodb://localhost:27017/playground&apos;) // 如果这个库不存在，在写入数据之后，这个库将会被自动创建。</span><br><span class="line">  .then(() =&gt; console.log(&apos;Connected to MongoDB...&apos;))</span><br><span class="line">  .catch(err =&gt; console.error(&apos;Could not connect to MongoDB...&apos;, err))</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+<h4 id="1-增"><a href="#1-增" class="headerlink" title="1.增"></a>1.增</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">const courseSchema = new mongoose.Schema(&#123;</span><br><span class="line">  name: String,</span><br><span class="line">  author: String,</span><br><span class="line">  tags: [ String ],</span><br><span class="line">  date: &#123; type: Date, default: Date.now &#125;,</span><br><span class="line">  isPublish: Boolean</span><br><span class="line">&#125;)</span><br><span class="line">const Course = mongoose.model(&apos;Course&apos;, courseSchema)</span><br><span class="line"></span><br><span class="line">async function createCourse()&#123;</span><br><span class="line">  const course = new Course(&#123;</span><br><span class="line">    name: &apos;Node.js Course&apos;,</span><br><span class="line">    author: &apos;Mosh&apos;,</span><br><span class="line">    tags: [ &apos;Vue&apos;, &apos;backend&apos; ],</span><br><span class="line">    isPublish: true</span><br><span class="line">  &#125;)</span><br><span class="line">  </span><br><span class="line">  const result = await course.save()</span><br><span class="line">  console.log(result)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">createCourse();</span><br></pre></td></tr></table></figure>
+<h4 id="2-查"><a href="#2-查" class="headerlink" title="2.查"></a>2.查</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line">async  function getCourse() &#123;</span><br><span class="line">  const courses = await Course</span><br><span class="line">    .find(&#123;author: &apos;Mosh&apos;, isPublish: true&#125;) // 查</span><br><span class="line">    .limit(10) // 数量限制</span><br><span class="line">    .sort(&#123;name: 1&#125;) // 排序</span><br><span class="line">    .select(&#123;name: 1, tags: 1&#125;) // 希望返回的属性</span><br><span class="line">  console.log(courses)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">getCourse()</span><br><span class="line"></span><br><span class="line">async  function getCourses() &#123;</span><br><span class="line">  // 比较操作符</span><br><span class="line">  // $or　　　　或关系</span><br><span class="line">  // $nor　　　 或关系取反</span><br><span class="line">  // $gt　　　　大于</span><br><span class="line">  // $gte　　　 大于等于</span><br><span class="line">  // $lt　　　　 小于</span><br><span class="line">  // $lte　　　  小于等于</span><br><span class="line">  // $ne        不等于</span><br><span class="line">  // $in        在多个值范围内</span><br><span class="line">  // $nin       不在多个值范围内</span><br><span class="line">  // $all       匹配数组中多个值</span><br><span class="line">  // $regex　　 正则，用于模糊查询</span><br><span class="line">  // $size　　　匹配数组大小</span><br><span class="line">  // $maxDistance　　范围查询，距离（基于LBS）</span><br><span class="line">  // $mod　　   取模运算</span><br><span class="line">  // $near　　　邻域查询，查询附近的位置（基于LBS）</span><br><span class="line">  // $exists　　  字段是否存在</span><br><span class="line">  // $elemMatch　　匹配内数组内的元素</span><br><span class="line">  // $within　　范围查询（基于LBS）</span><br><span class="line">  // $box　　　 范围查询，矩形范围（基于LBS）</span><br><span class="line">  // $center       范围醒询，圆形范围（基于LBS）</span><br><span class="line">  // $centerSphere　　范围查询，球形范围（基于LBS）</span><br><span class="line">  // $slice　　　　查询字段集合中的元素（比如从第几个之后，第N到第M个元素）</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  // 逻辑操作符</span><br><span class="line">  // or and</span><br><span class="line">  const courses = await Course</span><br><span class="line">    // .find(&#123;author: &apos;Mosh&apos;, isPublish: true&#125;) // 查</span><br><span class="line">    // .find(&#123;price: &#123; $gt: 10 &#125;&#125;) // 查</span><br><span class="line">    .find() // 查</span><br><span class="line">    .or([&#123;author: &apos;Mosh&apos;&#125;, &#123;isPublish: true&#125;])</span><br><span class="line">    .limit(10) // 数量限制</span><br><span class="line">    .sort(&#123;name: 1&#125;) // 排序</span><br><span class="line">    .select(&#123;name: 1, tags: 1&#125;) // 希望返回的属性</span><br><span class="line">  console.log(courses)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">getCourses()</span><br></pre></td></tr></table></figure>
+<h3 id="3-实现分页"><a href="#3-实现分页" class="headerlink" title="3.实现分页"></a>3.实现分页</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">async  function getCourses() &#123;</span><br><span class="line">  const pageSize = 10</span><br><span class="line">  const pageNumber = 1</span><br><span class="line">  const courses = await Course</span><br><span class="line">    .find(&#123;author: &apos;Mosh&apos;, isPublish: true&#125;) // 查</span><br><span class="line">    .ship((pageNumber - 1)*pageSize)</span><br><span class="line">    .limit(pageSize) // 数量限制</span><br><span class="line">    .sort(&#123;name: 1&#125;) // 排序</span><br><span class="line">    .select(&#123;name: 1, tags: 1&#125;) // 希望返回的属性</span><br><span class="line">  console.log(courses)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">getCourses()</span><br></pre></td></tr></table></figure>
+<h3 id="4-将数据导入数据库-在需要导入的json文件下运行命令"><a href="#4-将数据导入数据库-在需要导入的json文件下运行命令" class="headerlink" title="4.将数据导入数据库,在需要导入的json文件下运行命令:"></a>4.将数据导入数据库,在需要导入的json文件下运行命令:</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mongoimport --db mongo-exercises --collection courses --drop --file exercise-data.json --jsonArray</span><br></pre></td></tr></table></figure>
+<h3 id="5-改"><a href="#5-改" class="headerlink" title="5.改"></a>5.改</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">async function updatedCourse(id) &#123;</span><br><span class="line">  // 方法一：通过id找到文档，编辑属性，保存</span><br><span class="line"></span><br><span class="line">  // const course = await Course.findById(id)</span><br><span class="line">  // if(!course) return;</span><br><span class="line">  // course.set(&#123;</span><br><span class="line">  //   isPublish: true,</span><br><span class="line">  //   author: &apos;Another Author&apos;</span><br><span class="line">  // &#125;)</span><br><span class="line">  // const result = await course.save()</span><br><span class="line">  // console.log(result)</span><br><span class="line"></span><br><span class="line">  // 方法二：直接接入数据库修改文档</span><br><span class="line">  const result = await Course.update(&#123; _id: id &#125;,&#123; </span><br><span class="line">    $set: &#123;</span><br><span class="line">      author: &apos;Mosh&apos;,</span><br><span class="line">      isPublish: false</span><br><span class="line">    &#125;</span><br><span class="line">   &#125;)</span><br><span class="line">   console.log(result)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">updatedCourse(&apos;5d58ed053bda8866fcba6e75&apos;)</span><br></pre></td></tr></table></figure>
+<h3 id="6-删"><a href="#6-删" class="headerlink" title="6.删"></a>6.删</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">async function removeCourse(id) &#123;</span><br><span class="line">  const result = await Course.deleteOne(&#123;_id: id&#125;)</span><br><span class="line">   console.log(result)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">removeCourse(&apos;5d58ed053bda8866fcba6e75&apos;)</span><br></pre></td></tr></table></figure>
+
+      
+
+      
+        <div class="page-reward">
+          <a href="javascript:;" class="page-reward-btn tooltip-top">
+            <div class="tooltip tooltip-east">
+            <span class="tooltip-item">
+              赏
+            </span>
+            <span class="tooltip-content">
+              <span class="tooltip-text">
+                <span class="tooltip-inner">
+                  <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢你请我吃糖果<i class="icon icon-quo-right"></i></p>
+                  <div class="reward-box">
+                    
+                    
+                  </div>
+                </span>
+              </span>
+            </span>
+          </div>
+          </a>
+        </div>
+      
+    </div>
+    <div class="article-info article-info-index">
       
       
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2019" class="archive-year">2019</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/08/17/node从入门到放弃系列-MongoDB安装及使用/" class="archive-article-date">
-  	<time datetime="2019-08-17T13:17:52.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-08-17</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/08/17/node从入门到放弃系列-MongoDB安装及使用/">node从入门到放弃系列-MongoDB安装及使用</a>
-    </h1>
-  
+      
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">node</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">MongoDB</a>
-        		</li>
-      		
-		</ul>
-	</div>
+      
 
-          
-
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//pan.baidu.com/share/qrcode?url=https://fuheidemayuyu.github.io/2019/08/18/node从入门到放弃系列-MongoDB增删改查/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/08/12/node从入门到放弃系列-express-构建结构性路由/" class="archive-article-date">
-  	<time datetime="2019-08-12T13:53:13.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-08-12</time>
-</a>
+<nav id="article-nav">
+  
+  
+    <a href="/2019/08/17/node从入门到放弃系列-MongoDB安装及使用/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">node从入门到放弃系列-MongoDB安装及使用</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
         </div>
-    	 
+        
+        
+    </div>
+</aside>
+
+
+
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/08/12/node从入门到放弃系列-express-构建结构性路由/">node从入门到放弃系列-express-构建结构性路由</a>
-    </h1>
+  
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">node</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">入门</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">express</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">路由</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/08/11/node从入门到放弃系列-express-模板引擎/" class="archive-article-date">
-  	<time datetime="2019-08-11T15:37:55.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-08-11</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/08/11/node从入门到放弃系列-express-模板引擎/">node从入门到放弃系列-express-模板引擎</a>
-    </h1>
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">node</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">入门</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">express</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">debug</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/08/11/node从入门到放弃系列-express-使用debug/" class="archive-article-date">
-  	<time datetime="2019-08-11T15:08:48.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-08-11</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/08/11/node从入门到放弃系列-express-使用debug/">node从入门到放弃系列-express-使用debug</a>
-    </h1>
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">node</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">入门</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">express</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">debug</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/08/11/node从入门到放弃系列-express-保存应用配置/" class="archive-article-date">
-  	<time datetime="2019-08-11T14:28:26.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-08-11</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/08/11/node从入门到放弃系列-express-保存应用配置/">node从入门到放弃系列-express-保存应用配置</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">node</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">入门</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">express</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">配置</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">config</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/08/11/node从入门到放弃系列-express-区分开发环境和生产环境/" class="archive-article-date">
-  	<time datetime="2019-08-11T13:32:37.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-08-11</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/08/11/node从入门到放弃系列-express-区分开发环境和生产环境/">node从入门到放弃系列-express-区分开发环境和生产环境</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">node</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">入门</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">express</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">第三方中间件</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/08/10/node从入门到放弃系列-express-第三方中间件/" class="archive-article-date">
-  	<time datetime="2019-08-10T13:31:29.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-08-10</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/08/10/node从入门到放弃系列-express-第三方中间件/">node从入门到放弃系列-express-第三方中间件</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">node</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">入门</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">express</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">第三方中间件</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/08/10/node从入门到放弃系列-express-内建中间件/" class="archive-article-date">
-  	<time datetime="2019-08-10T13:12:03.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-08-10</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/08/10/node从入门到放弃系列-express-内建中间件/">node从入门到放弃系列-express-内建中间件</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">node</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">入门</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">express</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">内建中间件</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/08/10/node从入门到放弃系列-express-项目实践/" class="archive-article-date">
-  	<time datetime="2019-08-10T12:39:17.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-08-10</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/08/10/node从入门到放弃系列-express-项目实践/">node从入门到放弃系列-express-项目实践</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">node</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">入门</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">express</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">项目搭建</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">初始化</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/08/10/node从入门到放弃系列-express-delete请求/" class="archive-article-date">
-  	<time datetime="2019-08-10T12:24:44.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-08-10</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/08/10/node从入门到放弃系列-express-delete请求/">node从入门到放弃系列-express-delete请求</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">node</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">入门</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">express</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">delete请求</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-  
-    </div></section>
-  
-
-    
-    <nav id="page-nav">
-      <span class="page-number current">1</span><a class="page-number" href="/tags/node/page/2/">2</a><a class="extend next" rel="next" href="/tags/node/page/2/">Next &raquo;</a>
-    </nav>
   
 
 
@@ -700,9 +338,9 @@
 	var yiliaConfig = {
 		mathjax: true,
 		isHome: false,
-		isPost: false,
+		isPost: true,
 		isArchive: false,
-		isTag: true,
+		isTag: false,
 		isCategory: false,
 		open_in_new: true,
 		toc_hide_index: true,
