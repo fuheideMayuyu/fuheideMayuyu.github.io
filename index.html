@@ -160,6 +160,202 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-ES6函数拓展" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/08/19/ES6函数拓展/">ES6函数拓展</a>
+    </h1>
+  
+
+        
+        <a href="/2019/08/19/ES6函数拓展/" class="archive-article-date">
+  	<time datetime="2019-08-19T15:48:14.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-08-19</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="1-允许函数的参数设置默认值"><a href="#1-允许函数的参数设置默认值" class="headerlink" title="1.允许函数的参数设置默认值:"></a>1.允许函数的参数设置默认值:</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">function (x=1,y=2)&#123;</span><br><span class="line">  console.log(x,y)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="2-与解构赋值结合"><a href="#2-与解构赋值结合" class="headerlink" title="2.与解构赋值结合"></a>2.与解构赋值结合</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">function foo(&#123;x, y = 5&#125;) &#123;</span><br><span class="line">  console.log(x, y);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">foo(&#123;&#125;) // undefined 5</span><br><span class="line">foo(&#123;x: 1&#125;) // 1 5</span><br><span class="line">foo(&#123;x: 1, y: 2&#125;) // 1 2</span><br><span class="line">foo() // TypeError: Cannot read property &apos;x&apos; of undefineds</span><br></pre></td></tr></table></figure>
+<h3 id="3-参数默认值的位置"><a href="#3-参数默认值的位置" class="headerlink" title="3.参数默认值的位置"></a>3.参数默认值的位置</h3><p>通常情况下，定义了默认值的参数是函数的尾参数，如果在非尾部的参数设置了默认值，那么这个参数其实是没办法省略的。</p>
+<h3 id="4-函数的length属性。"><a href="#4-函数的length属性。" class="headerlink" title="4.函数的length属性。"></a>4.函数的length属性。</h3><p>指定了默认值之后，函数的length属性将返回没有指定默认值的参数个数。也就是说，length将会失真。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">(function (a) &#123;&#125;).length // 1</span><br><span class="line">(function (a = 5) &#123;&#125;).length // 0</span><br><span class="line">(function (a, b, c = 5) &#123;&#125;).length // 2</span><br></pre></td></tr></table></figure></p>
+<h3 id="5-作用域"><a href="#5-作用域" class="headerlink" title="5.作用域"></a>5.作用域</h3><p>一旦设置了参数的默认值，函数进行声明初始化时，参数会形成一个单独的作用域（context）。等到初始化结束，这个作用域就会消失。这种语法行为，在不设置参数默认值时，是不会出现的。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">var x = 1;</span><br><span class="line"></span><br><span class="line">function f(x, y = x) &#123;</span><br><span class="line">  console.log(y);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">f(2) // 2</span><br></pre></td></tr></table></figure></p>
+<h3 id="6-箭头函数"><a href="#6-箭头函数" class="headerlink" title="6.箭头函数"></a>6.箭头函数</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">var f = v =&gt; v;</span><br><span class="line"></span><br><span class="line">// 等同于</span><br><span class="line">var f = function (v) &#123;</span><br><span class="line">  return v;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>箭头函数可以省略return语句返回。</p>
+<p><strong>使用注意点</strong></p>
+<ul>
+<li>函数体的this对象，就是定义时所在的对象，而不是使用时所在的对象。</li>
+<li>不可用当作构造函数，也就是说，不可以使用new命令，否则会抛出一个错误。</li>
+<li>不可用使用arguments对象，该对象在函数体内不存在。如果要用，可以在rest参数代替。</li>
+<li>不可用使用yield命令，因此箭头函数不能用作Generator函数。<br>以上四点中，尤其要注意的是，this对象的指向是可变的，但是在箭头函数中，它是固定的。</li>
+</ul>
+<p><strong>箭头函数不适用场合:</strong></p>
+<ul>
+<li><p>第一个场合是定义对象的方法，且该方法内部包括this。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">const cat = &#123;</span><br><span class="line">  lives: 9,</span><br><span class="line">  jumps: () =&gt; &#123;</span><br><span class="line">    this.lives--;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>第二个场合是需要动态this的时候，也不应该使用箭头函数</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">var button = document.getElementById(&apos;press&apos;);</span><br><span class="line">button.addEventListener(&apos;click&apos;, () =&gt; &#123;</span><br><span class="line">  this.classList.toggle(&apos;on&apos;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="7-尾调优化"><a href="#7-尾调优化" class="headerlink" title="7.尾调优化"></a>7.尾调优化</h3><p>尾调用是函数式编程的重要概念，就是指某个函数的最后一步是调用另外一个函数<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">function f(x)&#123;</span><br><span class="line">  return g(x);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><strong>尾调用优化</strong><br>尾调用之所以与其他调用不同，就在于它的特殊的调用位置。</p>
+<p>我们知道，函数调用会在内存形成一个“调用记录”，又称“调用帧”（call frame），保存调用位置和内部变量等信息。如果在函数A的内部调用函数B，那么在A的调用帧上方，还会形成一个B的调用帧。等到B运行结束，将结果返回到A，B的调用帧才会消失。如果函数B内部还调用函数C，那就还有一个C的调用帧，以此类推。所有的调用帧，就形成一个“调用栈”（call stack）。</p>
+<p>尾调用由于是函数的最后一步操作，所以不需要保留外层函数的调用帧，因为调用位置、内部变量等信息都不会再用到了，只要直接用内层函数的调用帧，取代外层函数的调用帧就可以了。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">function f() &#123;</span><br><span class="line">  let m = 1;</span><br><span class="line">  let n = 2;</span><br><span class="line">  return g(m + n);</span><br><span class="line">&#125;</span><br><span class="line">f();</span><br><span class="line"></span><br><span class="line">// 等同于</span><br><span class="line">function f() &#123;</span><br><span class="line">  return g(3);</span><br><span class="line">&#125;</span><br><span class="line">f();</span><br><span class="line"></span><br><span class="line">// 等同于</span><br><span class="line">g(3);</span><br></pre></td></tr></table></figure></p>
+<p><strong>尾递归</strong><br>函数调用自身，称为递归。如果尾调用自身，就称为尾递归。<br>递归非常耗费内存，因为需要同时保存成千上百个调用帧，很容易发生“栈溢出”错误（stack overflow）。但对于尾递归来说，由于只存在一个调用帧，所以永远不会发生“栈溢出”错误。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">function factorial(n) &#123;</span><br><span class="line">  if (n === 1) return 1;</span><br><span class="line">  return n * factorial(n - 1);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">factorial(5) // 120</span><br></pre></td></tr></table></figure></p>
+<p>上面代码是一个阶乘函数，计算n的阶乘，最多需要保存n个调用记录，复杂度 O(n) 。<br>如果改写成尾递归，只保留一个调用记录，复杂度 O(1) 。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">function factorial(n, total) &#123;</span><br><span class="line">  if (n === 1) return total;</span><br><span class="line">  return factorial(n - 1, n * total);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">factorial(5, 1) // 120</span><br></pre></td></tr></table></figure></p>
+<p>还有一个比较著名的例子，就是计算 斐波那契 数列，也能充分说明尾递归优化的重要性。<br>非尾递归的 Fibonacci 数列实现如下。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">function Fibonacci (n) &#123;</span><br><span class="line">  if ( n &lt;= 1 ) &#123;return 1&#125;;</span><br><span class="line"></span><br><span class="line">  return Fibonacci(n - 1) + Fibonacci(n - 2);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Fibonacci(10) // 89</span><br><span class="line">Fibonacci(100) // 超时</span><br><span class="line">Fibonacci(500) // 超时</span><br></pre></td></tr></table></figure></p>
+<p>尾递归优化:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">function Fibonacci2 (n , ac1 = 1 , ac2 = 1) &#123;</span><br><span class="line">  if( n &lt;= 1 ) &#123;return ac2&#125;;</span><br><span class="line"></span><br><span class="line">  return Fibonacci2 (n - 1, ac2, ac1 + ac2);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Fibonacci2(100) // 573147844013817200000</span><br><span class="line">Fibonacci2(1000) // 7.0330367711422765e+208</span><br><span class="line">Fibonacci2(10000) // Infinity</span><br></pre></td></tr></table></figure></p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">javaScript</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">function</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/08/19/ES6函数拓展/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-rest参数和arguments的区别" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/08/19/rest参数和arguments的区别/">rest参数和arguments的区别</a>
+    </h1>
+  
+
+        
+        <a href="/2019/08/19/rest参数和arguments的区别/" class="archive-article-date">
+  	<time datetime="2019-08-19T15:47:51.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-08-19</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h4 id="1-res参数"><a href="#1-res参数" class="headerlink" title="1.res参数"></a>1.res参数</h4><p><strong>rest参数接受函数的多余参数，组成一个数组，放在形参的最后，形式如下:</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">function func(a,b,c,...rest)&#123;</span><br><span class="line">  console.log(rest)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><strong>rest参数和arguments对象的区别:</strong></p>
+<ul>
+<li>rest参数只包括那些没有给出名称的参数，而arguments包含所有参；</li>
+<li>arguments不是真正的数组，而rest参数是数组实例，可以直接应用sort,map,forEach,pop等数组方法。</li>
+<li>arguments对象拥有一些自己额外的功能(arguments.callee)。</li>
+</ul>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">javaScript</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">rest</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">arguments</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/08/19/rest参数和arguments的区别/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-node从入门到放弃系列-MongoDB增删改查" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -801,182 +997,6 @@
 
 
   
-    <article id="post-node从入门到放弃系列-express-模板引擎" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/08/11/node从入门到放弃系列-express-模板引擎/">node从入门到放弃系列-express-模板引擎</a>
-    </h1>
-  
-
-        
-        <a href="/2019/08/11/node从入门到放弃系列-express-模板引擎/" class="archive-article-date">
-  	<time datetime="2019-08-11T15:37:55.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-08-11</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h4 id="1-下载模块"><a href="#1-下载模块" class="headerlink" title="1.下载模块"></a>1.下载模块</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm i pug</span><br></pre></td></tr></table></figure>
-<h4 id="2-导入模块并使用pug"><a href="#2-导入模块并使用pug" class="headerlink" title="2. 导入模块并使用pug"></a>2. 导入模块并使用pug</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">// 导入模板引擎</span><br><span class="line">app.set(&apos;view engine&apos;, &apos;pug&apos;)</span><br><span class="line">// 设置保存模板的路径</span><br><span class="line">app.set(&apos;views&apos;, &apos;./views&apos;)</span><br></pre></td></tr></table></figure>
-<h4 id="3-在根目录下新建views文件夹，并在该文件夹下新建index-pug文件"><a href="#3-在根目录下新建views文件夹，并在该文件夹下新建index-pug文件" class="headerlink" title="3. 在根目录下新建views文件夹，并在该文件夹下新建index.pug文件"></a>3. 在根目录下新建views文件夹，并在该文件夹下新建index.pug文件</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">html</span><br><span class="line">  head</span><br><span class="line">    title= title</span><br><span class="line">  body</span><br><span class="line">    h1= message</span><br></pre></td></tr></table></figure>
-<h4 id="4-在index-js中使用"><a href="#4-在index-js中使用" class="headerlink" title="4.在index.js中使用"></a>4.在index.js中使用</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">app.get(&apos;/&apos;, (req,res) =&gt; &#123;</span><br><span class="line">  // res.send(&apos;Hello World !!!!&apos;)</span><br><span class="line">  res.render(&apos;index&apos;, &#123;title: &quot;My Express App&quot;, message: &quot;Hello&quot;&#125;)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">node</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">入门</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">express</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">debug</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/08/11/node从入门到放弃系列-express-模板引擎/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-node从入门到放弃系列-express-使用debug" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/08/11/node从入门到放弃系列-express-使用debug/">node从入门到放弃系列-express-使用debug</a>
-    </h1>
-  
-
-        
-        <a href="/2019/08/11/node从入门到放弃系列-express-使用debug/" class="archive-article-date">
-  	<time datetime="2019-08-11T15:08:48.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-08-11</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm i debug</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">const startupDebug = require(&apos;debug&apos;)(&apos;app:startup&apos;);</span><br><span class="line">const dbDebug = require(&apos;debug&apos;)(&apos;app:db&apos;);</span><br><span class="line"></span><br><span class="line">if(app.get(&apos;env&apos;) === &apos;development&apos;)&#123;</span><br><span class="line">  // app.use(Morgan(&apos;tiny&apos;)); // HTTP请求日志记录</span><br><span class="line">  startupDebug(&apos;Morgan enabled...&apos;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// Db work...</span><br><span class="line">dbDebug(&apos;Connected to the database...&apos;)</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">export DEBUG=app:startup // 看到startup的debug信息</span><br><span class="line">export DEBUG=app:* // 看到所有debug信息</span><br><span class="line">export DEBUG= // 隐藏debug信息</span><br><span class="line"></span><br><span class="line">// 快捷方式</span><br><span class="line">DEBUG=app:db nodemon index.js</span><br></pre></td></tr></table></figure>
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">node</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">入门</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">express</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">debug</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/08/11/node从入门到放弃系列-express-使用debug/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
@@ -1095,6 +1115,14 @@ MathJax.Hub.Queue(function() {
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">javaScript</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">function</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">css</a>
               </li>
              
@@ -1107,15 +1135,27 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">javaScript</a>
+                <a href="javascript:void(0)" class="js-tag color3">浮动</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">类型</a>
+                <a href="javascript:void(0)" class="js-tag color5">清除浮动</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">calc</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">http</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">协议</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">概述</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1124,10 +1164,6 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">状态码</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">calc</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1143,11 +1179,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">浮动</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">清除浮动</a>
+                <a href="javascript:void(0)" class="js-tag color3">类型</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1163,19 +1195,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">delete请求</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">post请求</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">协议</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">概述</a>
+                <a href="javascript:void(0)" class="js-tag color4">delete请求</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1191,7 +1215,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">web服务器</a>
+                <a href="javascript:void(0)" class="js-tag color2">第三方中间件</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1199,11 +1223,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">第三方中间件</a>
+                <a href="javascript:void(0)" class="js-tag color3">路由</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">路由</a>
+                <a href="javascript:void(0)" class="js-tag color5">输入验证</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1211,7 +1235,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">输入验证</a>
+                <a href="javascript:void(0)" class="js-tag color2">web服务器</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1220,6 +1244,30 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">config</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">hello world</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">rest</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">arguments</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">MongoDB</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">项目搭建</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">初始化</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1251,19 +1299,11 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">优化</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">webpack配置</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">项目搭建</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">初始化</a>
+                <a href="javascript:void(0)" class="js-tag color3">优化</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1275,15 +1315,7 @@ MathJax.Hub.Queue(function() {
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">hello world</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">项目准备</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">MongoDB</a>
               </li>
             
             <div class="clearfix"></div>
