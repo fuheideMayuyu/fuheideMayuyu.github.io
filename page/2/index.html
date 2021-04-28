@@ -160,6 +160,97 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-彻底理解JS中的回调-Callback-函数" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/08/12/彻底理解JS中的回调-Callback-函数/">彻底理解JS中的回调(Callback)函数</a>
+    </h1>
+  
+
+        
+        <a href="/2019/08/12/彻底理解JS中的回调-Callback-函数/" class="archive-article-date">
+  	<time datetime="2019-08-12T14:40:21.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-08-12</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>作为JS的核心，回调函数和异步执行是紧密相关的。理解什么是回调函数对于node.js开发至关重要。</p>
+<h4 id="重点："><a href="#重点：" class="headerlink" title="重点："></a>重点：</h4><ol>
+<li>函数可以作为一个参数在另一个函数中被调用。</li>
+<li>JS是异步编程，这就意味着js代码的执行顺序并不是从上到下按部就班的完成的，比如说有3行代码，在同步编程语言中，会先执行完第一行，再执行第二行，最后执行第三行。但在JS中，并不一定是这样，有可能第三行代码会被率先执行完，也就是说他们的执行顺序不是从上到下，这就是所谓的JS异步编程。</li>
+</ol>
+<p>代码示例:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">var fs = require(&quot;fs&quot;);</span><br><span class="line">var c</span><br><span class="line"> </span><br><span class="line">function f(x) &#123;</span><br><span class="line">    console.log(x)</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line">function writeFile() &#123;</span><br><span class="line">    fs.writeFile(&apos;input.txt&apos;, &apos;我是通过fs.writeFile 写入文件的内容&apos;, function (err) &#123;</span><br><span class="line">        if (!err) &#123;</span><br><span class="line">            console.log(&quot;文件写入完毕!&quot;)</span><br><span class="line">            c = 1</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line">c = 0</span><br><span class="line">writeFile()</span><br><span class="line">f(c)</span><br></pre></td></tr></table></figure></p>
+<p>上述代码中，先声明了一个全局变量c并赋值为0，在代码执行过程中，由于writeFile函数比较耗时，所以在执行writeFile函数过程中，程序并不会在原地等待其被执行完，而是继续执行f()函数，而此时writeFile函数并未执行完，所以c的值为0。</p>
+<p>为了保证函数f()是在writeFile函数执行完之后再执行，我们可以将该函数放入writeFile函数中<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">var fs = require(&quot;fs&quot;);</span><br><span class="line">var c</span><br><span class="line"> </span><br><span class="line">function f(x) &#123;</span><br><span class="line">    console.log(x)</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line">function writeFile() &#123; </span><br><span class="line">    fs.writeFile(&apos;input.txt&apos;, &apos;我是通过fs.writeFile 写入文件的内容&apos;, function (err) &#123;</span><br><span class="line">        if (!err) &#123;</span><br><span class="line">            console.log(&quot;文件写入完毕!&quot;)</span><br><span class="line">            c = 1</span><br><span class="line">            f(c)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line">c = 0</span><br><span class="line">writeFile()</span><br></pre></td></tr></table></figure></p>
+<p>这么做，目的虽然达到了，但是代码的灵活性不高，有没有一种方法可以让我想调什么函数就调什么函数，而不是一直只能是f()呢？<br>这时callback登场了<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">var fs = require(&quot;fs&quot;);</span><br><span class="line"> </span><br><span class="line">function f(x) &#123;</span><br><span class="line">    console.log(x)</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line">function writeFile(callback) &#123; //关键字callback，表示这个参数不是一个普通变量，而是一个函数</span><br><span class="line">    fs.writeFile(&apos;input.txt&apos;, &apos;我是通过fs.writeFile 写入文件的内容&apos;, function (err) &#123;</span><br><span class="line">        if (!err) &#123;</span><br><span class="line">            console.log(&quot;文件写入完毕!&quot;)</span><br><span class="line">            c = 1</span><br><span class="line">            callback(c) // 因为我们传进来的函数名是f()，所以此行相当于调用一次f(c)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">var c = 0</span><br><span class="line">writeFile(f) // 函数f作为一个参数传进writeFile函数</span><br></pre></td></tr></table></figure></p>
+<p>最终风格为:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">var fs = require(&quot;fs&quot;);</span><br><span class="line"> </span><br><span class="line">function writeFile(callback) &#123; </span><br><span class="line">    fs.writeFile(&apos;input.txt&apos;, &apos;我是通过fs.writeFile 写入文件的内容&apos;, function (err) &#123;</span><br><span class="line">        if (!err) &#123;</span><br><span class="line">            console.log(&quot;文件写入完毕!&quot;)</span><br><span class="line">            c = 1</span><br><span class="line">            callback(c) </span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br><span class="line">var c = 0</span><br><span class="line">writeFile(function (x) &#123;</span><br><span class="line">    console.log(x)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure></p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">javascript</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">回调函数</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">callback</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/08/12/彻底理解JS中的回调-Callback-函数/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-node从入门到放弃系列-express-构建结构性路由" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -928,91 +1019,6 @@
 
 
   
-    <article id="post-node从入门到放弃系列-express-delete请求" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/08/10/node从入门到放弃系列-express-delete请求/">node从入门到放弃系列-express-delete请求</a>
-    </h1>
-  
-
-        
-        <a href="/2019/08/10/node从入门到放弃系列-express-delete请求/" class="archive-article-date">
-  	<time datetime="2019-08-10T12:24:44.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-08-10</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">app.delete(&apos;/api/courses/:id&apos;,(req,res) =&gt; &#123;</span><br><span class="line">  const course = courses.find(c =&gt; c.id === parseInt(req.params.id))</span><br><span class="line">  if(!course) res.status(404).send(&apos;Id is undefined&apos;)</span><br><span class="line"></span><br><span class="line">  const index = courses.indexOf(course)</span><br><span class="line">  courses.splice(index, 1)</span><br><span class="line"></span><br><span class="line">  res.send(course)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">node</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">入门</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">express</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">delete请求</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/08/10/node从入门到放弃系列-express-delete请求/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/3/">Next &raquo;</a>
@@ -1344,6 +1350,10 @@ MathJax.Hub.Queue(function() {
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">项目准备</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">双向绑定</a>
               </li>
             
             <div class="clearfix"></div>
